@@ -214,7 +214,9 @@ class PlotManager:
                 self.log.debug(f"_refresh_task: cached entries removed: {len(remove_paths)}")
 
                 if self.cache.changed():
-                    self.cache.save()
+                    # disable the cache due to current incompatibility with remote plots
+                    #self.cache.save()
+                    pass
 
                 self.last_refresh_time = time.time()
 
@@ -278,7 +280,7 @@ class PlotManager:
                     # TODO: consider checking if the file was just written to (which would mean that the file is still
                     # being copied). A segfault might happen in this edge case.
 
-                    if prover.get_size() >= 30 and stat_info.st_size < 0.98 * expected_size:
+                    if str(file_path).find("--remoteplot--") == -1 and prover.get_size() >= 30 and stat_info.st_size < 0.98 * expected_size:
                         log.warning(
                             f"Not farming plot {file_path}. Size is {stat_info.st_size / (1024 ** 3)} GiB, but expected"
                             f" at least: {expected_size / (1024 ** 3)} GiB. We assume the file is being copied."
